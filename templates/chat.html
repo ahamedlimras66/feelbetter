@@ -348,18 +348,21 @@
                       info.gender = text;
                       BotMessage = "what is your problem, feel free to type"
                       sendMessage(BotMessage,'bot')
+                      Speech(BotMessage)
                     }
                     else if(BotMessage == "what is your problem, feel free to type")
                     {
                       info.problem = text;
                       BotMessage = "please give your contact details"
                       sendMessage(BotMessage,'bot')
+                      Speech(BotMessage)
                     }
                     else if(BotMessage == "please give your contact details")
                     {
                       info.contact = text;
                       BotMessage = "we will contact you very soon, thank you"
                       sendMessage(BotMessage,'bot')
+                      Speech(BotMessage)
                       fetch('/save_chat/'+JSON.stringify(info))
                     }
                     console.log(info)

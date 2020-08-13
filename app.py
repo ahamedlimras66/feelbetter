@@ -67,16 +67,16 @@ def login():
 
 @app.route('/login_check', methods=['POST', 'GET'])
 def loginCheck():
-	userName = request.form['username']
-	password = request.form['password']
-	user = AdminUser.query.filter_by(username=userName).first()
-	if user and check_password_hash(user.password, password):
-		login_user(user, remember=False)
-		if user.role <=2:
-			return redirect('admin')
-		return render_template("course.html")
-	error = "Incorrect username or password"
-	return render_template('login.html',error=error)
+    userName = request.form['username']
+    password = request.form['password']
+
+    user = AdminUser.query.filter_by(username=userName).first()
+    
+    if user and check_password_hash(user.password, password):
+        login_user(user, remember=False)
+        return redirect('admin')
+    error = "Incorrect username or password"
+    return render_template('login.html',error=error)
 
 @app.route("/")
 def home():
