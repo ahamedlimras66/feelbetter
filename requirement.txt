@@ -1,8 +1,0 @@
-flask
-SQLAlchemy
-Flask-Admin
-Flask-SQLAlchemy
-Flask-login
-Werkzeug
-psycopg2
-uwsgi
