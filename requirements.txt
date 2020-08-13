@@ -4,5 +4,6 @@ Flask-Admin
 Flask-SQLAlchemy
 Flask-login
 Werkzeug
+Flask-Mail
 psycopg2
 uwsgi
