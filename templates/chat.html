@@ -3,7 +3,7 @@
 <head>
   <title>Feel Better</title>
 
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="static/css/main.css">
 
 	 
       <style type="text/css">
@@ -209,7 +209,7 @@
 <!-- notification for small viewports and landscape oriented smartphones -->
 <div class="device-notification">
   <a class="device-notification--logo" href="#0">
-    <img src="assets/img/logo.png" alt="Wave">
+    <img src="static/img/logo.png" alt="Wave">
     <p>Feel Better</p>
   </a>
   <p class="device-notification--message">Feel Better Is A Page Developed Only For Reduce Depression..</p>
@@ -221,10 +221,10 @@
       <div class="l-wrapper">
         <header class="header">
           <a class="header--logo" href="#0">
-            <img src="assets/img/logo.png" alt="Global">
+            <img src="static/img/logo.png" alt="Global">
             <p>Feel Better</p>
           </a>
-           <button class="button" onClick="document.location='home.html'">BACK TO HOME</button>
+           <button class="button" onClick="document.location='/'">BACK TO HOME</button>
         </header>
         <nav class="l-side-nav">
           <ul class="side-nav">
@@ -245,7 +245,7 @@
 	    <ul class="messages"></ul>
 	    <div class="bottom_wrapper clearfix">
 	        <div class="message_input_wrapper">
-	            <input class="message_input" placeholder="Type your message here..." />
+	            <input class="message_input" id='msg' placeholder="Type your message here..." />
 	        </div>
 	        <div class="send_message">
 	          
@@ -263,10 +263,27 @@
 	</div>
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		(function () {
-	    var Message;
-	    Message = function (arg) {
+  <script type="text/javascript">
+  var Message;
+  var info = {};
+  var BotMessage="hi, what is your name"
+  talking = true; //when false the speach function doesn't work
+
+  function Speech(say) {
+               if ('speechSynthesis' in window && talking) {
+                    var utterance = new SpeechSynthesisUtterance(say);
+                    //msg.voice = voices[10]; // Note: some voices don't support altering params
+                    //msg.voiceURI = 'native';
+                    //utterance.volume = 1; // 0 to 1
+                    //utterance.rate = 0.1; // 0.1 to 10
+                    //utterance.pitch = 1; //0 to 2
+                    //utterance.text = 'Hello World';
+                    //utterance.lang = 'en-US';
+                    speechSynthesis.speak(utterance);
+               }
+          } 
+
+  Message = function (arg) {
 	        this.text = arg.text, this.message_side = arg.message_side;
 	        this.draw = function (_this) {
 	            return function () {
@@ -281,22 +298,20 @@
 	        }(this);
 	        return this;
 	    };
-	    $(function () {
-	        var getMessageText, message_side, sendMessage;
-	        message_side = 'right';
-	        getMessageText = function () {
-	            var $message_input;
-	            $message_input = $('.message_input');
-	            return $message_input.val();
-	        };
-	        sendMessage = function (text) {
+
+	sendMessage = function (text,how) {
 	            var $messages, message;
 	            if (text.trim() === '') {
 	                return;
 	            }
 	            $('.message_input').val('');
-	            $messages = $('.messages');
-	            message_side = message_side === 'left' ? 'right' : 'left';
+              $messages = $('.messages');
+              if (how == 'bot'){
+                message_side = 'left'
+              }else {
+                message_side = 'right'
+              }
+	            // message_side = message_side === 'left' ? 'right' : 'left';
 	            message = new Message({
 	                text: text,
 	                message_side: message_side
@@ -304,23 +319,52 @@
 	            message.draw();
 	            return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
 	        };
-	        $('.send_message').click(function (e) {
-	            return sendMessage(getMessageText());
-	        });
-	        $('.message_input').keyup(function (e) {
-	            if (e.which === 13) {
-	                return sendMessage(getMessageText());
-	            }
-	        });
-	        sendMessage('Hello Philip! :)');
-	        setTimeout(function () {
-	            return sendMessage('Hi Sandy! How are you?');
-	        }, 1000);
-	        return setTimeout(function () {
-	            return sendMessage('I\'m fine, thank you!');
-	        }, 2000);
-	    });
-	}.call(this));
+
+          sendMessage(BotMessage,'bot')
+          Speech(BotMessage)
+          var wage = document.getElementById("msg");
+
+          wage.addEventListener("keydown", function(e){
+               if(e.keyCode===13){
+
+                  text = document.getElementById("msg").value
+                  sendMessage(text,'user')
+
+                    if (BotMessage == "hi, what is your name"){
+                      info.name = text;
+                      BotMessage = "hi "+text+" what is you age?";
+                      sendMessage(BotMessage,'bot');
+                      Speech(BotMessage)
+                    }
+                    else if (BotMessage == "hi "+info.name+" what is you age?")
+                    {
+                      info.age = text;
+                      BotMessage = "what is you gender " + info.name;
+                      sendMessage(BotMessage,'bot')
+                      Speech(BotMessage)
+                    }
+                    else if (BotMessage == "what is you gender " + info.name)
+                    {
+                      info.gender = text;
+                      BotMessage = "what is your problem, feel free to type"
+                      sendMessage(BotMessage,'bot')
+                    }
+                    else if(BotMessage == "what is your problem, feel free to type")
+                    {
+                      info.problem = text;
+                      BotMessage = "please give your contact details"
+                      sendMessage(BotMessage,'bot')
+                    }
+                    else if(BotMessage == "please give your contact details")
+                    {
+                      info.contact = text;
+                      BotMessage = "we will contact you very soon, thank you"
+                      sendMessage(BotMessage,'bot')
+                      fetch('/save_chat/'+JSON.stringify(info))
+                    }
+                    console.log(info)
+               }
+          })
 	</script>
 
 			  

@@ -1,0 +1,6 @@
+flask
+SQLAlchemy
+Flask-Admin
+Flask-SQLAlchemy
+Flask-login
+Werkzeug
